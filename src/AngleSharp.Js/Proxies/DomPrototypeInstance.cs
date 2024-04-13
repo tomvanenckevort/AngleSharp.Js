@@ -1,9 +1,7 @@
 namespace AngleSharp.Js
 {
     using AngleSharp.Attributes;
-    using AngleSharp.Dom;
     using AngleSharp.Text;
-    using Jint.Native;
     using Jint.Native.Object;
     using Jint.Native.Symbol;
     using Jint.Runtime.Descriptors;
@@ -55,7 +53,7 @@ namespace AngleSharp.Js
                 {
                     if (ex.InnerException is ArgumentOutOfRangeException)
                     {
-                        result = new PropertyDescriptor(JsValue.Undefined, false, false, false);
+                        result = PropertyDescriptor.Undefined;
                         return true;
                     }
 
@@ -104,12 +102,9 @@ namespace AngleSharp.Js
         {
             foreach (var eventInfo in eventInfos)
             {
-                var names = eventInfo.GetCustomAttributes<DomNameAttribute>()
-                    .Select(m => m.OfficialName);
-
-                foreach (var name in names)
+                foreach (var m in eventInfo.GetCustomAttributes<DomNameAttribute>())
                 {
-                    SetEvent(name, eventInfo.AddMethod, eventInfo.RemoveMethod);
+                    SetEvent(m.OfficialName, eventInfo.AddMethod, eventInfo.RemoveMethod);
                 }
             }
         }
@@ -123,6 +118,7 @@ namespace AngleSharp.Js
 
                 if (HasProperty(name))
                 {
+                    // skip
                 }
                 else if (value.Adder != null && value.Remover != null)
                 {
@@ -148,9 +144,10 @@ namespace AngleSharp.Js
                 var putsForward = property.GetCustomAttribute<DomPutForwardsAttribute>();
                 var names = property
                     .GetCustomAttributes<DomNameAttribute>()
-                    .Select(m => m.OfficialName);
+                    .Select(m => m.OfficialName)
+                    .ToArray();
 
-                if (index != null || names.Any(m => m.Is("item")))
+                if (index != null || Array.Exists(names, m => m.Is("item")))
                 {
                     SetIndexer(property, indexParameters);
                 }
@@ -166,12 +163,9 @@ namespace AngleSharp.Js
         {
             foreach (var method in methods)
             {
-                var names = method.GetCustomAttributes<DomNameAttribute>()
-                    .Select(m => m.OfficialName);
-
-                foreach (var name in names)
+                foreach (var m in method.GetCustomAttributes<DomNameAttribute>())
                 {
-                    SetMethod(name, method);
+                    SetMethod(m.OfficialName, method);
                 }
             }
         }

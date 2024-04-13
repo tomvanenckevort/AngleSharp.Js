@@ -32,9 +32,11 @@ namespace AngleSharp.Js
                 {
                     return descriptor;
                 }
-                else if (prototype.HasProperty(property))
+
+                var prototypeProperty = prototype.GetOwnProperty(property);
+                if (prototypeProperty != PropertyDescriptor.Undefined)
                 {
-                    return prototype.GetProperty(property);
+                    return prototypeProperty;
                 }
             }
 
