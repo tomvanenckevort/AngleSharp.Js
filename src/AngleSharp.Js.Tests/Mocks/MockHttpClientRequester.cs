@@ -21,7 +21,7 @@ namespace AngleSharp.Js.Tests.Mocks
             _mockResponses = mockResponses;
         }
 
-        protected override async Task<IResponse> PerformRequestAsync(Request request, CancellationToken cancel)
+        protected override Task<IResponse> PerformRequestAsync(Request request, CancellationToken cancel)
         {
             var response = new DefaultResponse();
 
@@ -36,7 +36,7 @@ namespace AngleSharp.Js.Tests.Mocks
                 response.Content = new MemoryStream(Encoding.UTF8.GetBytes(string.Empty));
             }
 
-            return response;
+            return Task.FromResult<IResponse>(response);
         }
     }
 }

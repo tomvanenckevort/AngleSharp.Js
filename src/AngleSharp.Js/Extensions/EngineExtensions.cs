@@ -148,21 +148,18 @@ namespace AngleSharp.Js
                 newArgs[i] = arguments[i];
             }
 
-            if (obj != null)
+            for (var i = end + offset; i < max; i++)
             {
-                for (var i = end + offset; i < max; i++)
-                {
-                    var p = parameters[i];
-                    var name = p.Name;
+                var p = parameters[i];
+                var name = p.Name;
 
-                    if (obj.HasProperty(name))
-                    {
-                        newArgs[i - offset] = obj.GetProperty(name).Value;
-                    }
-                    else
-                    {
-                        newArgs[i - offset] = JsValue.Undefined;
-                    }
+                if (obj.HasProperty(name))
+                {
+                    newArgs[i - offset] = obj.Get(name);
+                }
+                else
+                {
+                    newArgs[i - offset] = JsValue.Undefined;
                 }
             }
 
